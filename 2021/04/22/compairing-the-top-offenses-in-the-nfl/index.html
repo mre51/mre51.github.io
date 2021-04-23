@@ -22,6 +22,11 @@
 
 
 
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
 <link rel="stylesheet" href="/css/fonts.css" media="all">
 <link rel="stylesheet" href="/css/main.css" media="all">
 
@@ -57,7 +62,7 @@
 
   <article class="article">
     
-    <span class="article-duration">0 min read</span>
+    <span class="article-duration">6 min read</span>
     
 
     <h1 class="article-title">Compairing the top Offenses in the NFL</h1>
@@ -71,6 +76,226 @@
 <script src="http://mre51.github.io/2021/04/22/compairing-the-top-offenses-in-the-nfl/index_files/header-attrs/header-attrs.js"></script>
 
 
+<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --</code></pre>
+<pre><code>## v ggplot2 3.3.3     v purrr   0.3.4
+## v tibble  3.1.0     v dplyr   1.0.5
+## v tidyr   1.1.3     v stringr 1.4.0
+## v readr   1.4.0     v forcats 0.5.1</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre><code>## 
+## Attaching package: &#39;scales&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     discard</code></pre>
+<pre><code>## The following object is masked from &#39;package:readr&#39;:
+## 
+##     col_factor</code></pre>
+<pre><code>## Registered S3 methods overwritten by &#39;ggalt&#39;:
+##   method                  from   
+##   grid.draw.absoluteGrob  ggplot2
+##   grobHeight.absoluteGrob ggplot2
+##   grobWidth.absoluteGrob  ggplot2
+##   grobX.absoluteGrob      ggplot2
+##   grobY.absoluteGrob      ggplot2</code></pre>
+<pre><code>## 
+## Attaching package: &#39;kableExtra&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     group_rows</code></pre>
+<pre><code>## 
+## Attaching package: &#39;formattable&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:scales&#39;:
+## 
+##     comma, percent, scientific</code></pre>
+<p>The latest trend in the modern NFL offense has been the deep pass. All around the league teams have been looking to up there deep threat ability. Many fans will call an offense bad if they don’t see these big splash passing play highlights often in their favorite teams offense. It’s all anybody in the NFL wants to see right now but is it truly the best type of offense.</p>
+<p>Here’s the first code chunk we will use to make a simple bar chart showing us who had the most yards in the season. The bar chart will also be a stacked bar chart so we can see total short passing yards, deep passing yards and rushing yards by a team.</p>
+<pre class="r"><code>longdata &lt;- totalyards %&gt;% pivot_longer(cols = starts_with(&quot;yards&quot;), names_to = &quot;Type&quot;, values_to = &quot;Yards&quot;)</code></pre>
+<pre class="r"><code>ggplot(longdata, aes(x=reorder(Team, Yards), weight=Yards, fill=Type)) +
+  geom_bar() +
+  scale_fill_manual(values = c(&quot;orange&quot;,&quot;blue&quot;,&quot;red&quot;)) +
+  scale_fill_discrete(name = &quot;Yards Type&quot;, labels = c(&quot;Deep&quot;, &quot;Rushing&quot;, &quot;Short&quot;)) + 
+  labs(x=&quot;Team&quot;, y=&quot;Yards&quot;, title = &quot;Kansas Leads NFL in Yards&quot;, subtitle = &quot;Suprisingly with a Low Amount of Deep Yards&quot;, caption=&quot;Source: Stathead | By Michael Earnest&quot;) +
+  theme_minimal() + coord_flip()</code></pre>
+<pre><code>## Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;, which
+## will replace the existing scale.</code></pre>
+<p><img src="http://mre51.github.io/2021/04/22/compairing-the-top-offenses-in-the-nfl/index_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<p>Kansas City, Green Bay, Buffalo, Tampa Bay and New Orleans were often considered as the top offenses throughout the 2020-2021 season. Kansas is by no surprise is at the top with Buffalo and Green Bay coming a few ranks under them. Then more towards the middle of the pack are New Orleans and Tampa Bay.</p>
+<p>Many offenses can strive off of utilizing the short passing game and rushing attack. The New Orleans Saints, who are seen as a top 5 offense, seem to utilize this greatly. Along with this many older quarterbacks are often seen as unable to throw the deep ball anymore. Here in this graph we can see that New Orleans, Tampa Bay and Green Bay all are toward the top of the league in deep passing.</p>
+<p>Here is the monster code chunk we will use for the next three graphs.</p>
+<pre class="r"><code>ggplot() + 
+  geom_point(
+    data=deep, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;grey&quot;, 
+    alpha=.5) + 
+  labs(x=&quot;1st Down %&quot;, y=&quot;YDS per play&quot;, title=&quot;Kansas Suprisingly Average in the Deep Pass Game&quot;, subtitle=&quot;Houston Leads the deep Pass Game and New Orleans is Incredibly Effecient&quot;, caption=&quot;Source: Stathead | By Mr.E&quot;) + 
+  theme_minimal()+ 
+   theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 2)
+  ) + 
+  theme(axis.text.x=element_text(angle=90, hjust=1)) + 
+  scale_y_continuous(labels=comma) + 
+  geom_point(
+    data=TOP1, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;#E31837&quot;) + 
+  geom_point(
+    data=TOP2, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;#D3BC8D&quot;) + 
+  geom_point(
+    data=TOP3, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;#00338D&quot;) + 
+  geom_point(
+    data=TOP4, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;#203731&quot;) + 
+  geom_point(
+    data=TOP5, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;#FF7900&quot;) + 
+  geom_text_repel(
+    data=TOP1, 
+    aes(x=X1st., y=Yds, label=ï..Tm)
+  ) + 
+  geom_text_repel(
+    data=TOP2, 
+    aes(x=X1st., y=Yds, label=ï..Tm)
+  ) + 
+  geom_text_repel(
+    data=TOP3, 
+    aes(x=X1st., y=Yds, label=ï..Tm)
+  ) + 
+  geom_text_repel(
+    data=TOP4, 
+    aes(x=X1st., y=Yds, label=ï..Tm)
+  ) + 
+  geom_text_repel(
+    data=TOP5, 
+    aes(x=X1st., y=Yds, label=ï..Tm)
+  ) </code></pre>
+<pre><code>## Warning: Using size for a discrete variable is not advised.</code></pre>
+<p><img src="http://mre51.github.io/2021/04/22/compairing-the-top-offenses-in-the-nfl/index_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+<p>Surprisingly, Kansas City is at the bottom of the pack compared to the top 5 offenses in the deep pass game. Along with that New Orleans is one of the top teams in the league in all categories of average yards per play, 1st down percentage and turnover percentage.</p>
+<pre class="r"><code>ggplot() + 
+  geom_point(
+    data=short, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;grey&quot;, 
+    alpha=.5) + 
+  labs(x=&quot;1st Down %&quot;, y=&quot;YDS per play&quot;, title=&quot;Kansas, Buffalo and Green Bay Dominates the Short Passing Game&quot;, subtitle=&quot;While New Orleans and Tampa Bay are Stuningly Low &quot;, caption=&quot;Source: Stathead | By Mr.E&quot;) + 
+  theme_minimal()+ 
+   theme(
+    plot.title = element_text(size = 12, face = &quot;bold&quot;),
+    axis.title = element_text(size = 8)
+  ) + 
+  theme(axis.text.x=element_text(angle=90, hjust=1)) + 
+  scale_y_continuous(labels=comma) + 
+  geom_point(
+    data=TOP1SHORT, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;#E31837&quot;) + 
+  geom_point(
+    data=TOP2SHORT, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;#D3BC8D&quot;) + 
+  geom_point(
+    data=TOP3SHORT, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;#00338D&quot;) + 
+  geom_point(
+    data=TOP4SHORT, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;#203731&quot;) + 
+  geom_point(
+    data=TOP5SHORT, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;#FF7900&quot;) + 
+  geom_text_repel(
+    data=TOP1SHORT, 
+    aes(x=X1st., y=Yds, label=ï..Tm)
+  ) + 
+  geom_text_repel(
+    data=TOP2SHORT, 
+    aes(x=X1st., y=Yds, label=ï..Tm)
+  ) + 
+  geom_text_repel(
+    data=TOP3SHORT, 
+    aes(x=X1st., y=Yds, label=ï..Tm)
+  ) + 
+  geom_text_repel(
+    data=TOP4SHORT, 
+    aes(x=X1st., y=Yds, label=ï..Tm)
+  ) + 
+  geom_text_repel(
+    data=TOP5SHORT, 
+    aes(x=X1st., y=Yds, label=ï..Tm)
+  ) </code></pre>
+<pre><code>## Warning: Using size for a discrete variable is not advised.</code></pre>
+<p><img src="http://mre51.github.io/2021/04/22/compairing-the-top-offenses-in-the-nfl/index_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+<p>Inversely, Kansas City, Buffalo, and Green Bay both have very good short pass games while New Orleans and Tampa Bay both sit in the middle. My guess for this would be that KC, Buffalo, and Green Bay all have very high RAC compared to New Orleans and Tampa because of the types of receivers those teams have.</p>
+<pre class="r"><code>ggplot() + 
+  geom_point(
+    data=rushing, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;grey&quot;, 
+    alpha=.5) + 
+  labs(x=&quot;1st Down %&quot;, y=&quot;YDS per play&quot;, title=&quot;No Top 5 Offense has a Strong Running Game&quot;, subtitle=&quot;But New Orleans, Buffalo and Kansas Have a Very Efficent Run Game&quot;, caption=&quot;Source: Stathead | By Mr.E&quot;) + 
+  theme_minimal()+ 
+   theme(
+    plot.title = element_text(size = 18, face = &quot;bold&quot;),
+    axis.title = element_text(size = 4)
+  ) + 
+  theme(axis.text.x=element_text(angle=90, hjust=1)) + 
+  scale_y_continuous(labels=comma) + 
+  geom_point(
+    data=TOP1RUSHING, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;#E31837&quot;) + 
+  geom_point(
+    data=TOP2RUSHING, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;#D3BC8D&quot;) + 
+  geom_point(
+    data=TOP3RUSHING, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;#00338D&quot;) + 
+  geom_point(
+    data=TOP4RUSHING, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;#203731&quot;) + 
+  geom_point(
+    data=TOP5RUSHING, 
+    aes(x=X1st., y=Yds, size=TO.), 
+    color=&quot;#FF7900&quot;) + 
+  geom_text_repel(
+    data=TOP1RUSHING, 
+    aes(x=X1st., y=Yds, label=ï..Tm)
+  ) + 
+  geom_text_repel(
+    data=TOP2RUSHING, 
+    aes(x=X1st., y=Yds, label=ï..Tm)
+  ) + 
+  geom_text_repel(
+    data=TOP3RUSHING, 
+    aes(x=X1st., y=Yds, label=ï..Tm)
+  ) + 
+  geom_text_repel(
+    data=TOP4RUSHING, 
+    aes(x=X1st., y=Yds, label=ï..Tm)
+  ) + 
+  geom_text_repel(
+    data=TOP5RUSHING, 
+    aes(x=X1st., y=Yds, label=ï..Tm)
+  ) </code></pre>
+<pre><code>## Warning: Using size for a discrete variable is not advised.</code></pre>
+<p><img src="http://mre51.github.io/2021/04/22/compairing-the-top-offenses-in-the-nfl/index_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<p>To no one’s surprise, none of the top offenses relied solely on the rushing. However the top 3 offenses, consisting of Kansas, Buffalo and New Orleans, all had very efficient rushing games that garnered them high first down rates and average turnover rates.</p>
+<p>In the end, It appears that both the short pass game and the pass game are the most efficient way in the NFL with rushing slowly going to the wayside.</p>
 
     </div>
   </article>
@@ -93,6 +318,18 @@
 
     </div>
     
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
 
     
 

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.82.1" />
+
+
+<title>How Much Does Size Matter in Sumo Wrestling - A Sports Data Blog</title>
+<meta property="og:title" content="How Much Does Size Matter in Sumo Wrestling - A Sports Data Blog">
+
+
+  <link href='http://mre51.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/rstudio/blogdown">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/rstudio">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">4 min read</span>
+    
+
+    <h1 class="article-title">How Much Does Size Matter in Sumo Wrestling</h1>
+
+    
+    <span class="article-date">2021-04-24</span>
+    
+
+    <div class="article-content">
+      
+<script src="http://mre51.github.io/2021/04/24/how-much-does-size-matter-in-sumo-wrestling/index_files/header-attrs/header-attrs.js"></script>
+
+
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --</code></pre>
+<pre><code>## v ggplot2 3.3.3     v purrr   0.3.4
+## v tibble  3.1.0     v dplyr   1.0.5
+## v tidyr   1.1.3     v stringr 1.4.0
+## v readr   1.4.0     v forcats 0.5.1</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(scales)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;scales&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     discard</code></pre>
+<pre><code>## The following object is masked from &#39;package:readr&#39;:
+## 
+##     col_factor</code></pre>
+<pre class="r"><code>library(ggplot2)</code></pre>
+<pre class="r"><code>library(ggalt)</code></pre>
+<pre><code>## Registered S3 methods overwritten by &#39;ggalt&#39;:
+##   method                  from   
+##   grid.draw.absoluteGrob  ggplot2
+##   grobHeight.absoluteGrob ggplot2
+##   grobWidth.absoluteGrob  ggplot2
+##   grobX.absoluteGrob      ggplot2
+##   grobY.absoluteGrob      ggplot2</code></pre>
+<pre class="r"><code>library(ggrepel)</code></pre>
+<pre class="r"><code>set.seed(1234)</code></pre>
+<pre class="r"><code>library(ggridges)</code></pre>
+<pre class="r"><code>sumo &lt;- read.csv(&quot;data/2019.csv&quot;)</code></pre>
+<pre class="r"><code>sumo2019total &lt;- read.csv(&quot;data/2019(1).csv&quot;)</code></pre>
+<p>Over the summer of this covid ridden year, I was bored out of my mind. None of the major American sports leagues or the NCAA were playing. All there was to watch was the KBO play at four in the morning on ESPN or the LCS. With absolutely nothing to do I decided I would watch some highlights on YouTube. After going down a wormhole of many different sports highlights I managed to find myself watching highlights of Rikishi (Japanese for professional sumo wrestler) Enhō Akira. However, He isn’t your typical idea of a rikishi. He’s not a massive big bellied guy that you spot from a mile away. He’s a fairly average sized guy coming in at only 1.68m(5ft6in) and 98kg(218lbs). Now you wouldn’t think that a guy who barely meets the height and weight requirements to be even an average sumo wrestler but that’s where you are wrong. Enhō Akira is not just an average he is one of the top sumo wrestlers in the world currently being the #1 in the Jūryō division(the second highest division in sumo wrestling) . He is also only one kachi-koshi(winning more matches than losing in a tournament. Often will result in a promotion of a division or a rise in ranks) away from getting into the top division of sumo wrestling. After watching all of the exciting highlights of Enhō Akira it made me wonder how much does size really matter in sumo wrestling.</p>
+<p>With 2020 being a weird sports year in general and the 2021 tournaments just starting I decided to look at the 2019 rikishi data to see if height and weight really matter. First off, I wanted to look at the big picture and see how all 3358 active rikishi compared to the 80 rikishi in the top 4 divisions.</p>
+<pre class="r"><code>ggplot() + 
+  geom_point(data=sumo2019total, aes(x=height, y=weight)) +
+ geom_point(data=sumo, aes(x=height, y=weight), color = &quot;red&quot;) +
+  geom_smooth(data=sumo2019total, aes(x=height, y=weight), method=&quot;lm&quot;)+
+  labs(x=&quot;Height (cm)&quot;, y=&quot;Weight (kg)&quot;, title=&quot;Average Height and Weight of Every Rikishi in 2019&quot;, subtitle=&quot;A Very Normal Trend with Some Crazy Outliers&quot;, caption=&quot;Source: Sumo Reference | By Michael Earnest&quot;)  + theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10), 
+    plot.subtitle = element_text(size=10), 
+    panel.grid.minor = element_blank()
+    )</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>## Warning: Removed 1 rows containing non-finite values (stat_smooth).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<p><img src="http://mre51.github.io/2021/04/24/how-much-does-size-matter-in-sumo-wrestling/index_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+There is a pretty normal trend that taller rikishi are obviously able to carry more weight. However there are alot of high and low outliers. A lot of the low outliers are probably just new rikishi that have just started competing and have yet to put on more weight. However a lot of the heaviest rikishi are also not among the top divisions. Many are barely in the 2nd lowest division.</p>
+<p>Now let’s just take a look at the top 80 rikishi and see how height and weight correlates with the win/loss percentage in the last tournament before the 2019 season.</p>
+<pre class="r"><code>ggplot() + geom_point(data=sumo, aes(x=height, y=weight, size=prev_w), alpha=.24)+ 
+  scale_size(range = c(1, 12), name=&quot;Wins&quot;)+
+  labs(x=&quot;Height (cm)&quot;, y=&quot;Weight (kg)&quot;, title=&quot;Higher or Lower Weight Rikishi Tend to Have More Wins&quot;, subtitle=&quot;The Average Tend to Struggle Compared to the Outliers&quot;, caption=&quot;Source: Sumo Reference | By Michael Earnest&quot;)  + theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10), 
+    plot.subtitle = element_text(size=10), 
+    panel.grid.minor = element_blank()
+    )</code></pre>
+<p><img src="http://mre51.github.io/2021/04/24/how-much-does-size-matter-in-sumo-wrestling/index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code>winpct &lt;- sumo %&gt;% mutate(winloss = prev_w/(prev_w + prev_l))</code></pre>
+<pre class="r"><code>winpct %&gt;% mutate(grouping = case_when(
+  weight &gt; 175 ~ &quot;175kg+&quot;,
+  weight &gt;= 150 &amp; weight &lt;=174.9 ~ &quot;150kg-174kg&quot;,
+  weight &gt;= 125 &amp; weight &lt;=149.9 ~ &quot;125-149kg&quot;,
+  weight &lt; 124.9 ~ &quot;&lt;124kg&quot;)
+) -&gt; sumoweightgroup</code></pre>
+<pre class="r"><code>ggplot(sumoweightgroup, aes(x = winloss, y = grouping, fill = grouping)) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  labs(x=&quot;WinLoss%&quot;, y=&quot;Weight Grouping&quot;, title=&quot;Smaller Rikishi Have a Substatinally Higher Win/Loss Pct&quot;, subtitle=&quot;While the Heaviest Have the greatest Variance&quot;, caption=&quot;Source: Sumo Reference | By Michael Earnest&quot;)  + theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 15, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10), 
+    plot.subtitle = element_text(size=10), 
+    panel.grid.minor = element_blank(),
+    legend.position = &quot;none&quot;
+    )</code></pre>
+<pre><code>## Picking joint bandwidth of 0.0783</code></pre>
+<pre><code>## Warning: Removed 2 rows containing non-finite values (stat_density_ridges).</code></pre>
+<p><img src="http://mre51.github.io/2021/04/24/how-much-does-size-matter-in-sumo-wrestling/index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+

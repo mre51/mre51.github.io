@@ -138,7 +138,8 @@ There is a pretty normal trend that taller rikishi are obviously able to carry m
     )</code></pre>
 <p><img src="http://mre51.github.io/2021/04/24/how-much-does-size-matter-in-sumo-wrestling/index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
       <p> Surprisingly, It appears that the lower weight rikishi have more wins than the heavier ones. It appears that around 170kg is where rikishi start to vary more. While there are a lot of winning rikishi in the high weights there are also a lot who barely won five matches.</p>
-<pre class="r"><code>winpct &lt;- sumo %&gt;% mutate(winloss = prev_w/(prev_w + prev_l))</code></pre>
+      <p> Seeing this makes me wonder how the win/loss percentage would compare if we grouped the rikishi by similar weights. </p>
+      <pre class="r"><code>winpct &lt;- sumo %&gt;% mutate(winloss = prev_w/(prev_w + prev_l))</code></pre>
 <pre class="r"><code>winpct %&gt;% mutate(grouping = case_when(
   weight &gt; 175 ~ &quot;175kg+&quot;,
   weight &gt;= 150 &amp; weight &lt;=174.9 ~ &quot;150kg-174kg&quot;,
@@ -159,7 +160,9 @@ There is a pretty normal trend that taller rikishi are obviously able to carry m
 <pre><code>## Picking joint bandwidth of 0.0783</code></pre>
 <pre><code>## Warning: Removed 2 rows containing non-finite values (stat_density_ridges).</code></pre>
 <p><img src="http://mre51.github.io/2021/04/24/how-much-does-size-matter-in-sumo-wrestling/index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
-
+      <p> The heaviest rikishi are still showing a lot of variance here on this ridge chart showing more of a wave rather than the normal bell curve. The heaviest do have the highest average win/loss percentage but it is wildly inconsistent for the total of the weight grouping. Surprisingly, the smallest weight group rikishi has the highest average win/loss percentage with very little variance besides a small lower bump. The middle weight groupings are about where I thought they would be as in the other graph there was a lot of variance which in the end averaged out to the two lowest scores.</p>
+      <p> In the end surprisingly a lot of the smaller rikishi are very successful especially compared to the wildy variable higher weights. The middle weight though were the most average with normal bell curves around the 50% win/loss. 
+</p>
     </div>
   </article>
 

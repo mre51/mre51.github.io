@@ -137,6 +137,7 @@ There is a pretty normal trend that taller rikishi are obviously able to carry m
     panel.grid.minor = element_blank()
     )</code></pre>
 <p><img src="http://mre51.github.io/2021/04/24/how-much-does-size-matter-in-sumo-wrestling/index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+      <p> Surprisingly, It appears that the lower weight rikishi have more wins than the heavier ones. It appears that around 170kg is where rikishi start to vary more. While there are a lot of winning rikishi in the high weights there are also a lot who barely won five matches.</p>
 <pre class="r"><code>winpct &lt;- sumo %&gt;% mutate(winloss = prev_w/(prev_w + prev_l))</code></pre>
 <pre class="r"><code>winpct %&gt;% mutate(grouping = case_when(
   weight &gt; 175 ~ &quot;175kg+&quot;,
